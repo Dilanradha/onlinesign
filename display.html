@@ -31,7 +31,7 @@
     <button onclick="sendEmail()">Send to Email</button>
 
     <script>
-        emailjs.init({ publicKey: "a9BUKMzSQVEqmzZAF" }); // Replace with your EmailJS Public Key
+        emailjs.init({ publicKey: "MYZjz58SNtQJUuGtm" }); // Replace with your EmailJS Public Key
 
         const A4_WIDTH = Math.round((210 / 25.4) * 300);
         const A4_HEIGHT = Math.round((297 / 25.4) * 300);
@@ -108,8 +108,8 @@
         function sendEmail() {
     const imageData = signCanvas.toDataURL("image/png", 1.0); // Convert canvas to Base64 image
 
-    emailjs.send("your_service_id_here", "your_template_id_here", {
-        to_email: "your-email@example.com",
+    emailjs.send("service_7iu9tc2", "template_sk15ho2", {
+        to_email: "dilanradha@gmail.com",
         image: imageData // This must match the {{image}} placeholder in your template
     }).then(response => {
         alert("Email sent successfully!");
