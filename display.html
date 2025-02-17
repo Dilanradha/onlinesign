@@ -43,13 +43,19 @@
         signCanvas.style.width = "90%";
         signCanvas.style.height = "auto";
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const imageUrl = urlParams.get("image");
+        // Retrieve image from localStorage
+        const storedImage = localStorage.getItem("uploadedInvoice");
         const invoiceImage = new Image();
-        invoiceImage.src = decodeURIComponent(imageUrl);
-        invoiceImage.onload = function () {
-            ctx.drawImage(invoiceImage, 0, 0, signCanvas.width, signCanvas.height);
-        };
+
+        if (storedImage) {
+            invoiceImage.src = storedImage;
+            invoiceImage.onload = function () {
+                ctx.drawImage(invoiceImage, 0, 0, signCanvas.width, signCanvas.height);
+            };
+        } else {
+            alert("No image found. Please upload again.");
+            window.location.href = "index.html";
+        }
 
         ctx.lineWidth = 8;
         ctx.lineCap = "round";
@@ -101,7 +107,7 @@
 
         function sendEmail() {
             const imageData = signCanvas.toDataURL("image/png", 1.0);
-            emailjs.send("service_7iu9tc2", "template_vir720k", {
+            emailjs.send("service_7iu9tc2", "template_sk15ho2", {
                 to_email: "dilanradha@gmail.com",
                 image: imageData
             }).then(response => {
