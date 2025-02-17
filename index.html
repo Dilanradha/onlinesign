@@ -16,29 +16,23 @@
 
     <script>
         function uploadImage() {
-            const fileInput = document.getElementById('invoiceImage');
-            if (fileInput.files.length === 0) {
-                alert('Please select an image file.');
-                return;
-            }
+    const fileInput = document.getElementById('invoiceImage');
+    if (fileInput.files.length === 0) {
+        alert('Please select an image file.');
+        return;
+    }
 
-            const file = fileInput.files[0];
-            const reader = new FileReader();
+    const file = fileInput.files[0];
+    const reader = new FileReader();
 
-            reader.onload = function (e) {
-                const imageUrl = encodeURIComponent(e.target.result);
-                const signPageUrl = `display.html?image=${imageUrl}`;
+    reader.onload = function (e) {
+        localStorage.setItem("uploadedInvoice", e.target.result); // Save image to localStorage
+        window.location.href = "display.html"; // Navigate to the signing page
+    };
 
-                // Show the generated link
-                const linkContainer = document.getElementById('linkContainer');
-                const signLink = document.getElementById('signLink');
-                
-                signLink.href = signPageUrl;  // Set the link URL
-                linkContainer.style.display = 'block';  // Show the link
-            };
+    reader.readAsDataURL(file);
+}
 
-            reader.readAsDataURL(file); // Convert image to Data URL
-        }
     </script>
 </body>
 </html>
