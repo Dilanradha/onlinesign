@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Invoice</title>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 2px solid black;
+            max-width: 90%;
+            height: auto;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sign Invoice</h1>
+    <canvas id="signCanvas"></canvas>
+    <br>
+    <button onclick="clearCanvas()">Clear Signature</button>
+    <button onclick="saveHighQualityImage()">Save Signed Invoice</button>
+    <button onclick="sendEmail()">Send to Email</button>
+
+    <script>
+        emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS Public Key
+
+        const A4_WIDTH = Math.round((210 / 25.4) * 300);
+        const A4_HEIGHT = Math.round((297 / 25.4) * 300);
+
+        const signCanvas = document.getElementById("signCanvas");
+        const ctx = signCanvas.getContext("2d");
+        signCanvas.width = A4_WIDTH;
+        signCanvas.height = A4_HEIGHT;
+        signCanvas.style.width = "90%";
+        signCanvas.style.height = "auto";
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const imageUrl = urlParams.get("image");
+        const invoiceImage = new Image();
+        invoiceImage.src = decodeURIComponent(imageUrl);
+        invoiceImage.onload = function () {
+            ctx.drawImage(invoiceImage, 0, 0, signCanvas.width, signCanvas.height);
+        };
+
+        ctx.lineWidth = 8;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "black";
+
+        let drawing = false;
+        function getCanvasCoordinates(e) {
+            const rect = signCanvas.getBoundingClientRect();
+            let x = e.offsetX * (A4_WIDTH / signCanvas.clientWidth);
+            let y = e.offsetY * (A4_HEIGHT / signCanvas.clientHeight);
+            return { x, y };
+        }
+
+        function startDrawing(e) {
+            e.preventDefault();
+            drawing = true;
+            const { x, y } = getCanvasCoordinates(e);
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+            e.preventDefault();
+            const { x, y } = getCanvasCoordinates(e);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+
+        function stopDrawing() { drawing = false; }
+
+        signCanvas.addEventListener("mousedown", startDrawing);
+        signCanvas.addEventListener("mousemove", draw);
+        signCanvas.addEventListener("mouseup", stopDrawing);
+        signCanvas.addEventListener("mouseleave", stopDrawing);
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, signCanvas.width, signCanvas.height);
+            ctx.drawImage(invoiceImage, 0, 0, signCanvas.width, signCanvas.height);
+        }
+
+        function saveHighQualityImage() {
+            const imageData = signCanvas.toDataURL("image/png", 1.0);
+            const link = document.createElement("a");
+            link.href = imageData;
+            link.download = "signed_invoice.png";
+            link.click();
+        }
+
+        function sendEmail() {
+            const imageData = signCanvas.toDataURL("image/png", 1.0);
+            emailjs.init("a9BUKMzSQVEqmzZAF");
+            emailjs.send("service_7iu9tc2", "template_vir720k", {
+                to_email: "dilanradha@gmail.com",
+                image: imageData
+            }).then(response => {
+                alert("Email sent successfully!");
+            }).catch(error => {
+                console.error("Error sending email:", error);
+            });
+        }
+    </script>
+</body>
+</html>
