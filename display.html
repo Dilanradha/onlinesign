@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Invoice</title>
-    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         body {
             display: flex;
@@ -31,7 +31,7 @@
     <button onclick="sendEmail()">Send to Email</button>
 
     <script>
-        emailjs.init("a9BUKMzSQVEqmzZAF"); // Replace with your EmailJS Public Key
+        emailjs.init({ publicKey: "a9BUKMzSQVEqmzZAF" }); // Replace with your EmailJS Public Key
 
         const A4_WIDTH = Math.round((210 / 25.4) * 300);
         const A4_HEIGHT = Math.round((297 / 25.4) * 300);
