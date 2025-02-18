@@ -31,7 +31,10 @@
     <button onclick="sendEmail()">Send to Email</button>
 
     <script>
-        emailjs.init({ publicKey: "public_GSVpY1e1AoFmmMsRm" }); // Replace with your EmailJS Public Key
+        // Initialize EmailJS after the page is fully loaded
+        window.onload = function() {
+            emailjs.init("public_GSVpY1e1AoFmmMsRm"); // ✅ Corrected public key initialization
+        };
 
         const A4_WIDTH = Math.round((210 / 25.4) * 300);
         const A4_HEIGHT = Math.round((297 / 25.4) * 300);
@@ -62,6 +65,7 @@
         ctx.strokeStyle = "black";
 
         let drawing = false;
+
         function getCanvasCoordinates(e) {
             const rect = signCanvas.getBoundingClientRect();
             let x = e.offsetX * (A4_WIDTH / signCanvas.clientWidth);
@@ -106,17 +110,31 @@
         }
 
         function sendEmail() {
-    const imageData = signCanvas.toDataURL("image/png", 1.0); // Convert canvas to Base64 image
+            const imageData = signCanvas.toDataURL("image/png", 1.0); // Convert canvas to Base64 image
 
-    emailjs.send("service_7iu9tc2", "template_sk15ho2", {
-        to_email: "dilanradha@gmail.com",
-        image: imageData // This must match the {{image}} placeholder in your template
-    }).then(response => {
-        alert("Email sent successfully!");
-    }).catch(error => {
-        console.error("Error sending email:", error);
-    });
-}
+            emailjs.send("service_7iu9tc2", "template_sk15ho2", {
+                to_email: "dilanradha@gmail.com",
+                image: imageData // ✅ Ensure this matches the variable in your EmailJS template
+            }).then(response => {
+                alert("Email sent successfully!");
+            }).catch(error => {
+                console.error("Error sending email:", error);
+                alert("Error sending email. Check the console for details.");
+            });
+        }
+
+        // ✅ Debugging function: Test sending an email without an image
+        function sendTestEmail() {
+            emailjs.send("service_7iu9tc2", "template_sk15ho2", {
+                to_email: "dilanradha@gmail.com",
+                message: "This is a test email without an image!"
+            }).then(response => {
+                alert("Test email sent successfully!");
+            }).catch(error => {
+                console.error("Error sending test email:", error);
+                alert("Error sending test email. Check the console for details.");
+            });
+        }
     </script>
 </body>
 </html>
